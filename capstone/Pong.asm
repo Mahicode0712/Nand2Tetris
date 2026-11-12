@@ -1,0 +1,19 @@
+// Tiny loop used to test the assembler
+@10
+D=A
+@counter
+M=D
+(LOOP)
+@counter
+D=M
+@0
+D=D-A
+@END
+D;JLE
+@counter
+M=M-1
+@LOOP
+0;JMP
+(END)
+@END
+0;JMP

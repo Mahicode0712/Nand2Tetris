@@ -1,0 +1,24 @@
+CHIP CPU {
+    IN inM[16], instruction[16], reset;
+    OUT outM[16], writeM, addressM[15], pc[15];
+
+    PARTS:
+    Mux16(a=aluOut, b=inM, sel=instruction[15], out=aluInputA);
+    DRegister(in=aluOut, load=instruction[4], out=dReg);
+    ARegister(in=instruction, load=instruction[5], out=aReg);
+    ALU(x=dReg, y=aluInputA, zx=instruction[11], nx=instruction[10], zy=instruction[9],
+        ny=instruction[8], f=instruction[7], no=instruction[6], out=aluOut, zr=zr, ng=ng);
+    Mux16(a=aReg, b=aluOut, sel=instruction[15], out=outM);
+    PC(in=aReg, load=jumpLoad, inc=true, reset=reset, out=pc);
+    Or(a=zr, b=ng, out=zrOrNg);
+    Not(in=zrOrNg, out=gt);
+    And(a=instruction[0], b=gt, out=jumpGT);
+    And(a=instruction[1], b=zr, out=jumpEQ);
+    And(a=instruction[2], b=ng, out=jumpLT);
+    Or(a=jumpGT, b=jumpEQ, out=jumpGE);
+    Or(a=jumpGE, b=jumpLT, out=jumpLoad);
+    And(a=instruction[15], b=jumpLoad, out=writeLoad);
+    // The output bus reflects the A register and the memory address bus.
+    Or16(a=aReg, b=false, out=addressM);
+    And(a=instruction[3], b=instruction[15], out=writeM);
+}
