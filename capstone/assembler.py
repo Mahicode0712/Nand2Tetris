@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Hack assembler for the Nand to Tetris capstone project.
+"""Hack assembler for the Nand to Tetris capstone project."""
 
-Requirements from the assignment:
+"""Requirements from the assignment:
 - Remove comments and blank lines
 - Record labels
 - Assign variables to RAM addresses starting at 16
